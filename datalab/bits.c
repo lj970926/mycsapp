@@ -216,7 +216,14 @@ int negate(int x) {
  *   Rating: 3
  */
 int isAsciiDigit(int x) {
-  return 2;
+  int msb = 0x1 << 31;
+  int left_bound = 0x30;
+  int right_bound = 0x3a;
+  int neg_left = (~left_bound) + 1;
+  int neg_right = (~right_bound) + 1;
+  int check_left = x + neg_left;
+  int check_right = x + neg_right;
+  return !(check_left & msb) & !!(check_right & msb);
 }
 /* 
  * conditional - same as x ? y : z 
@@ -226,7 +233,11 @@ int isAsciiDigit(int x) {
  *   Rating: 3
  */
 int conditional(int x, int y, int z) {
-  return 2;
+  int is_zero = !x;
+  int neg_one = (~1) + 1;
+  int mask = is_zero + neg_one;
+  int inv_mask = ~mask;
+  return (y & mask) | (z & inv_mask);
 }
 /* 
  * isLessOrEqual - if x <= y  then return 1, else return 0 
