@@ -247,7 +247,15 @@ int conditional(int x, int y, int z) {
  *   Rating: 3
  */
 int isLessOrEqual(int x, int y) {
-  return 2;
+  int msb_mask = 0x1 << 31;
+  int neg_x = (~x) + 1;
+  int res = y + neg_x;
+  int is_res_pos = !(res & msb_mask);
+  int is_pos_x = !(x & msb_mask);
+  int is_pos_y = !(y & msb_mask);
+  int x_neg_y_pos = (!is_pos_x) & is_pos_y;
+  int x_pos_y_neg = is_pos_x & (!is_pos_y);
+  return (is_res_pos | x_neg_y_pos) & !x_pos_y_neg;
 }
 //4
 /* 
@@ -259,7 +267,12 @@ int isLessOrEqual(int x, int y) {
  *   Rating: 4 
  */
 int logicalNeg(int x) {
-  return 2;
+  int neg_one = (~1) + 1;
+  int x_minus_one = x + neg_one;
+  int lsb_mask = 0x1;
+  int s_x = (x >> 31) & lsb_mask;
+  int s_x_one = (x_minus_one >> 31) & lsb_mask;
+  return (s_x ^ s_x_one) & (s_x ^ 0x1);
 }
 /* howManyBits - return the minimum number of bits required to represent x in
  *             two's complement
