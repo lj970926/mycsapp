@@ -367,6 +367,8 @@ int floatFloat2Int(unsigned uf) {
   int exponent = (uf >> 23) & 0xff;
   int mantissa = uf & 0x7fffff;
   int sign = uf >> 31;
+  int res = 0;
+
   exponent = exponent - 127;
   if (exponent < 0) {
     return 0;
@@ -379,7 +381,7 @@ int floatFloat2Int(unsigned uf) {
   } else {
     mantissa = mantissa << (exponent - 23);
   }
-  int res =  (1 << exponent) + mantissa;
+  res =  (1 << exponent) + mantissa;
   if (sign == 1) {
     res = -res;
   }
@@ -400,5 +402,19 @@ int floatFloat2Int(unsigned uf) {
  *   Rating: 4
  */
 unsigned floatPower2(int x) {
-    return 2;
+    int exponent = 0;
+    int mantissa = 0;
+    int res = 0;
+    if (x >= 128) {
+      exponent = 255;
+    } else if (x < -149) {
+      exponent = 0;
+    } else if (x < -126) {
+      mantissa = 1 << (x + 149);
+      exponent = 0;
+    } else {
+      exponent = x + 127;
+    }
+    res =  (exponent << 23) + mantissa;
+    return res;
 }
