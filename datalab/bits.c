@@ -287,7 +287,35 @@ int logicalNeg(int x) {
  *  Rating: 4
  */
 int howManyBits(int x) {
-  return 0;
+  int zero = 0;
+  int neg_one = (~1) + 1;
+  int shift_len = 16;
+
+  int shifted_x = x >> shift_len;
+  int not_enough = !(!(shifted_x ^ zero) | !(shifted_x ^ neg_one));
+  int xor_mask = not_enough + neg_one;
+  shift_len  = shift_len + ((8 ^ xor_mask) + !(not_enough));
+
+  shifted_x = x >> shift_len;
+  not_enough = !(!(shifted_x ^ zero) | !(shifted_x ^ neg_one));
+  xor_mask = not_enough + neg_one;
+  shift_len  = shift_len + ((4 ^ xor_mask) + !(not_enough)); 
+
+  shifted_x = x >> shift_len;
+  not_enough = !(!(shifted_x ^ zero) | !(shifted_x ^ neg_one));
+  xor_mask = not_enough + neg_one;
+  shift_len  = shift_len + ((2 ^ xor_mask) + !(not_enough));
+
+  shifted_x = x >> shift_len; 
+  not_enough = !(!(shifted_x ^ zero) | !(shifted_x ^ neg_one));
+  xor_mask = not_enough + neg_one;
+  shift_len  = shift_len + ((1 ^ xor_mask) + !(not_enough)); 
+
+  shifted_x = x >> shift_len;
+  not_enough = !(!(shifted_x ^ zero) | !(shifted_x ^ neg_one));
+  shift_len = shift_len + not_enough; 
+
+  return (shift_len & (!(x ^ zero) + neg_one) & (!(x ^ neg_one) + neg_one)) + 1;
 }
 //float
 /* 
