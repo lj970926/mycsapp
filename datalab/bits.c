@@ -330,7 +330,26 @@ int howManyBits(int x) {
  *   Rating: 4
  */
 unsigned floatScale2(unsigned uf) {
-  return 2;
+  unsigned exponent = (uf >> 23) & 0xff;
+  unsigned mantissa = uf & 0x7fffff;
+  unsigned sign = uf >> 31;
+  unsigned res = 0;
+  unsigned tmp = 0;
+  if (exponent == 255) {
+    return uf;
+  } else if (exponent == 254) {
+    mantissa = 0;
+  } else if (exponent == 0) {
+    tmp = mantissa << 1;
+    if ((tmp >> 23) == 0) {
+      mantissa = tmp;
+      exponent = exponent - 1;
+    } else {
+      mantissa = tmp & 0x7fffff;
+    }
+  }
+  exponent = exponent + 1;
+  return (res | (sign << 31) | (exponent << 23)) + mantissa;
 }
 /* 
  * floatFloat2Int - Return bit-level equivalent of expression (int) f
